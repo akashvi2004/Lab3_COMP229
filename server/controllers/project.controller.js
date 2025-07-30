@@ -1,8 +1,13 @@
 import Project from "../models/project.model.js";
 import errorHandler from "./error.controller.js";
 
-// Create a new project (Admin only)
+// ✅ Create a new project (Admin only)
 const create = async (req, res) => {
+  // Check if user is authenticated and is an admin
+  if (!req.auth || !req.auth.admin) {
+    return res.status(403).json({ error: "❌ Admin access required." });
+  }
+
   const project = new Project(req.body);
   try {
     await project.save();
@@ -12,24 +17,29 @@ const create = async (req, res) => {
   }
 };
 
-// List all projects (Public)
+// ✅ List all projects (Public)
 const list = async (req, res) => {
   try {
     const projects = await Project.find().sort({ created: -1 });
     res.json(projects);
   } catch (err) {
-    res.status(400).json({ error: "Could not fetch projects" });
+    res.status(400).json({ error: "❌ Could not fetch projects" });
   }
 };
 
-// Delete a project (Admin only)
+// ✅ Delete a project (Admin only)
 const remove = async (req, res) => {
+  // Check if user is authenticated and is an admin
+  if (!req.auth || !req.auth.admin) {
+    return res.status(403).json({ error: "❌ Admin access required." });
+  }
+
   try {
     const project = await Project.findByIdAndDelete(req.params.projectId);
-    if (!project) return res.status(404).json({ error: "Project not found" });
-    res.json({ message: " Project deleted!" });
+    if (!project) return res.status(404).json({ error: "❌ Project not found" });
+    res.json({ message: "🗑️ Project deleted successfully!" });
   } catch (err) {
-    res.status(400).json({ error: "Could not delete project" });
+    res.status(400).json({ error: "❌ Could not delete project" });
   }
 };
 

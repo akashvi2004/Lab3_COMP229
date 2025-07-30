@@ -26,6 +26,10 @@ import AddProject from "./core/AddProject.jsx";
 // PrivateRoute
 import PrivateRoute from "./lib/PrivateRoute.jsx";
 
+// Project Form
+import ProjectForm from "./core/ProjectForm.jsx";
+
+
 export default function MainRouter() {
   return (
     <div>
@@ -67,6 +71,16 @@ export default function MainRouter() {
             </PrivateRoute>
           }
         />
+
+            <Route
+      path="/projects/new"
+      element={
+        <PrivateRoute>
+          <ProjectForm />
+        </PrivateRoute>
+      }
+    />
+
 
         {/*Admin-only Add Routes (but wrapped in PrivateRoute) */}
         <Route

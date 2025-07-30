@@ -7,7 +7,7 @@ const router = express.Router();
 // ✅ Public: View all projects
 router.get("/api/projects", projectCtrl.list);
 
-// ✅ Admin: Create new project
+// ✅ Admin: Create a new project
 router.post(
   "/api/projects",
   authCtrl.requireSignin,
@@ -15,7 +15,7 @@ router.post(
   projectCtrl.create
 );
 
-// Admin: Delete project
+// ✅ Admin: Delete a project by ID
 router.delete(
   "/api/projects/:projectId",
   authCtrl.requireSignin,

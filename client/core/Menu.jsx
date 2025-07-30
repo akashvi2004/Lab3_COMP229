@@ -41,24 +41,14 @@ export default function Menu() {
           </Button>
         </Link>
 
-        {/*  If NOT logged in */}
-        {!auth.isAuthenticated() && (
-          <>
-            <Link to="/signup">
-              <Button sx={{ color: isActive(location, "/signup") }}>
-                Sign up
-              </Button>
-            </Link>
-            <Link to="/signin">
-              <Button sx={{ color: isActive(location, "/signin") }}>
-                Sign In
-              </Button>
-            </Link>
-          </>
-        )}
+        <Link to="/projects">
+          <Button sx={{ color: isActive(location, "/projects") }}>
+            Projects
+          </Button>
+        </Link>
 
-        {/*  If logged in */}
-        {auth.isAuthenticated() && (
+        {/* If logged in */}
+{auth.isAuthenticated() && (
   <>
     <Link to={`/user/${auth.isAuthenticated().user._id}`}>
       <Button
@@ -75,11 +65,19 @@ export default function Menu() {
 
     {/* Only Admin sees Add Education */}
     {auth.isAuthenticated().user.role === "admin" && (
-      <Link to="/education/add">
-        <Button sx={{ color: isActive(location, "/education/add") }}>
-          Add Education
-        </Button>
-      </Link>
+      <>
+        <Link to="/education/add">
+          <Button sx={{ color: isActive(location, "/education/add") }}>
+            Add Education
+          </Button>
+        </Link>
+
+        <Link to="/projects/new">
+          <Button sx={{ color: isActive(location, "/projects/new") }}>
+            Add Project
+          </Button>
+        </Link>
+      </>
     )}
 
     <Button
@@ -92,6 +90,7 @@ export default function Menu() {
     </Button>
   </>
 )}
+
       </Toolbar>
     </AppBar>
   );
