@@ -10,7 +10,7 @@ import {
   Grid,
   Box,
 } from "@mui/material";
-import { getProjects } from "./api-project.js"; // We'll create this next
+import { getProjects } from "./api-project.js"; 
 
 export default function ProjectList() {
   const [projects, setProjects] = useState([]);

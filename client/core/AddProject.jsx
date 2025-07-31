@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, TextField, Button, Typography } from "@mui/material";
 import auth from "../lib/auth-helper";
 
@@ -14,9 +14,24 @@ export default function AddProject() {
 
   const jwt = auth.isAuthenticated();
 
-  // Block normal users
-  if (!jwt || jwt.user.role !== "admin") {
-    return <h3 style={{ textAlign: "center", marginTop: "50px" }}>🚫 Unauthorized: Admins only</h3>;
+  // ✅ Debug stored JWT on mount
+  useEffect(() => {
+    const jwt = sessionStorage.getItem("jwt");
+    console.log("Stored JWT:", jwt ? JSON.parse(jwt) : "No JWT found");
+  }, []);
+
+  // ✅ Block non-admin users
+  if (!jwt || jwt.user?.role !== "admin") 
+    {
+      console.log("JWT in session:", jwt);
+alert("Logged in as: " + (jwt?.user?.role || "Unknown"));
+
+    console.warn("Access Denied. Current role:", jwt?.user?.role);
+    return (
+      <h3 style={{ textAlign: "center", marginTop: "50px", color: "red" }}>
+        ❌ Admin access required
+      </h3>
+    );
   }
 
   const handleChange = (name) => (event) => {
@@ -28,7 +43,7 @@ export default function AddProject() {
       title: values.title,
       description: values.description,
       link: values.link,
-      technologies: values.technologies.split(",").map(t => t.trim())
+      technologies: values.technologies.split(",").map((t) => t.trim())
     };
 
     try {
@@ -52,7 +67,7 @@ export default function AddProject() {
           link: "",
           technologies: "",
           error: "",
-          success: " Project added successfully!"
+          success: "✅ Project added successfully!"
         });
       }
     } catch (err) {

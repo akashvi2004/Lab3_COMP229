@@ -18,19 +18,20 @@ const handleError = (err) => {
 
 const create = async (user) => {
   try {
-    const response = await fetch(API_BASE, {
-      method: "POST",
+    let response = await fetch('/api/users/', {
+      method: 'POST',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(user),
     });
-    return await handleResponse(response);
+    return await response.json();
   } catch (err) {
-    return handleError(err);
+    console.log(err);
   }
 };
+
 
 const list = async (signal) => {
   try {

@@ -2,35 +2,27 @@ import React, { useState } from "react";
 import {
   Card,
   CardContent,
-  Typography,
-  TextField,
   CardActions,
+  TextField,
+  Typography,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
+  MenuItem
 } from "@mui/material";
-import { Link } from "react-router-dom";
-import { create } from "./api-user";
+import { create } from "./api-user.js"; // <-- Make sure your API call is correct
+import { Navigate } from "react-router-dom";
 
 export default function Signup() {
   const [values, setValues] = useState({
     name: "",
-    password: "",
     email: "",
+    password: "",
+    role: "user", // default role
     error: "",
+    success: false,
   });
-
-  const [open, setOpen] = useState(false);
 
   const handleChange = (name) => (event) => {
     setValues({ ...values, [name]: event.target.value });
-  };
-
-  const handleClose = () => {
-    setOpen(false);
   };
 
   const clickSubmit = () => {
@@ -38,97 +30,85 @@ export default function Signup() {
       name: values.name || undefined,
       email: values.email || undefined,
       password: values.password || undefined,
+      role: values.role || "user",
     };
 
     create(user).then((data) => {
       if (data.error) {
-        setValues({ ...values, error: data.error });
+        setValues({ ...values, error: data.error, success: false });
       } else {
-        setOpen(true);
+        setValues({ ...values, error: "", success: true });
       }
     });
   };
 
+  if (values.success) {
+    return <Navigate to="/signin" />;
+  }
+
   return (
-    <div>
-      <Card
-        sx={{
-          maxWidth: 400,
-          margin: "0 auto",
-          mt: 3,
-          p: 2,
-          textAlign: "center",
-        }}
-      >
-        <CardContent>
-          <Typography variant="h6" sx={{ fontSize: 18 }}>
-            Sign Up
+    <Card sx={{ maxWidth: 600, margin: "auto", mt: 5, p: 2 }}>
+      <CardContent>
+        <Typography variant="h5" sx={{ mb: 2 }}>
+          Sign Up
+        </Typography>
+
+        <TextField
+          id="name"
+          label="Name"
+          value={values.name}
+          onChange={handleChange("name")}
+          margin="normal"
+          fullWidth
+        />
+        <TextField
+          id="email"
+          label="Email"
+          type="email"
+          value={values.email}
+          onChange={handleChange("email")}
+          margin="normal"
+          fullWidth
+        />
+        <TextField
+          id="password"
+          label="Password"
+          type="password"
+          value={values.password}
+          onChange={handleChange("password")}
+          margin="normal"
+          fullWidth
+        />
+
+        <TextField
+          id="role"
+          label="Role"
+          select
+          value={values.role}
+          onChange={handleChange("role")}
+          margin="normal"
+          fullWidth
+        >
+          <MenuItem value="user">User</MenuItem>
+          <MenuItem value="admin">Admin</MenuItem>
+        </TextField>
+
+        {values.error && (
+          <Typography color="error" sx={{ mt: 1 }}>
+            {values.error}
           </Typography>
-
-          <TextField
-            id="name"
-            label="Name"
-            sx={{ width: "100%", mb: 2 }}
-            value={values.name}
-            onChange={handleChange("name")}
-            margin="normal"
-          />
-          <TextField
-            id="email"
-            label="Email"
-            sx={{ width: "100%", mb: 2 }}
-            value={values.email}
-            onChange={handleChange("email")}
-            margin="normal"
-          />
-          <TextField
-            id="password"
-            label="Password"
-            sx={{ width: "100%", mb: 2 }}
-            value={values.password}
-            onChange={handleChange("password")}
-            type="password"
-            margin="normal"
-          />
-
-          {values.error && (
-            <Typography color="error" sx={{ mt: 1 }}>
-              {values.error}
-            </Typography>
-          )}
-        </CardContent>
-        <CardActions>
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={clickSubmit}
-            sx={{ margin: "0 auto", mb: 2 }}
-          >
-            Submit
-          </Button>
-        </CardActions>
-      </Card>
-
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>New Account</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            New account successfully created.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Link to="/signin">
-            <Button
-              color="primary"
-              autoFocus
-              variant="contained"
-              onClick={handleClose}
-            >
-              Sign In
-            </Button>
-          </Link>
-        </DialogActions>
-      </Dialog>
-    </div>
+        )}
+      </CardContent>
+      <CardActions>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={clickSubmit}
+          sx={{ mx: "auto", mb: 2 }}
+        >
+          Submit
+        </Button>
+      </CardActions>
+    </Card>
   );
 }
